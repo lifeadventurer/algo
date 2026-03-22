@@ -22,6 +22,7 @@ single library.
 - `data/` - data structures such as DSU, Fenwick tree, segment tree, PBDS, and
   hashing helpers
 - `numeric/` - modular arithmetic, fast power, extended gcd
+- `string/` - string algorithms such as Z-function
 - `misc/` - fast IO, pragma helpers, RNG, and other utilities
 - `debug.h` - local debugging helpers
 - `generate_snippets.py` - builds a `cpp.json` snippet file for VS Code
