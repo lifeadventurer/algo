@@ -21,6 +21,7 @@ single library.
 - `template/` - contest templates
 - `data/` - data structures such as DSU, Fenwick tree, segment tree, PBDS, and
   hashing helpers
+- `graph/` - graph algorithms such as BFS
 - `numeric/` - modular arithmetic, fast power, extended gcd
 - `string/` - string algorithms such as Z-function
 - `misc/` - fast IO, pragma helpers, RNG, and other utilities
