@@ -1,1 +1,6 @@
 cpp.json
+codebook/contents.tex
+codebook/navigation.tex
+output/
+tmp/
+__pycache__/

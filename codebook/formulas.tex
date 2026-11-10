@@ -1,0 +1,72 @@
+\section{Formulas and reductions}
+\subsection{Number theory and counting}
+For $n=\prod p_i^{e_i}$:
+\[
+\varphi(n)=n\prod_i(1-1/p_i),\quad
+\tau(n)=\prod_i(e_i+1).
+\]
+\[
+\sigma(n)=\prod_i\frac{p_i^{e_i+1}-1}{p_i-1}.
+\]
+In modular arithmetic the displayed division needs an invertible denominator;
+otherwise sum the geometric series directly.
+$a^{-1}$ modulo $m$ exists iff $\gcd(a,m)=1$.
+For prime $p$ and $a\not\equiv0$, $a^{-1}=a^{p-2}\pmod p$.
+Linear Diophantine $ax+by=c$ is solvable iff $\gcd(a,b)\mid c$.
+If $(x_0,y_0)$ is one solution, all are
+$x=x_0+k(b/g),\ y=y_0-k(a/g)$.
+
+\[
+\binom nk=\binom{n-1}k+\binom{n-1}{k-1},\quad
+\sum_k\binom nk=2^n.
+\]
+Stars and bars: $x_1+\cdots+x_k=n$, $x_i\ge0$, gives
+$\binom{n+k-1}{k-1}$ for $k\ge1$.
+Catalan: $C_n=\binom{2n}n/(n+1)$; modular division needs an inverse.
+Derangements: $D_0=1,D_1=0,D_n=(n-1)(D_{n-1}+D_{n-2})$.
+Inclusion-exclusion: alternating sum over intersections of chosen bad sets.
+Burnside: number of orbits equals average fixed points over a finite group.
+
+\subsection{Graph reductions}
+\textbf{Bipartite vertex cover:} after maximum matching, start alternating
+reachability at unmatched left vertices, traverse unmatched edges left-to-right
+and matched edges right-to-left. If reached sets are $Z_L,Z_R$, a minimum
+vertex cover is $(L\setminus Z_L)\cup Z_R$. Its size equals the matching size.
+
+\textbf{Lower-bound circulation:} replace an edge $u\to v$ with bounds $[l,r]$
+by capacity $r-l$, accumulate $b[u]-=l,b[v]+=l$. For $b[v]>0$ add
+$SS\to v$ with capacity $b[v]$; for $b[v]<0$ add $v\to TT$ with capacity
+$-b[v]$. Feasible iff all edges out of $SS$ saturate. For feasible $s$-$t$
+flow add a sufficiently large capacity edge $t\to s$ before the test.
+
+\textbf{Vertex capacities:} split each vertex into in/out with an edge of its
+capacity. Original edges go from out to in.
+\textbf{DAG minimum path cover:} for a DAG, split vertices into two bipartite
+copies with one edge per original arc; minimum vertex-disjoint path cover is
+$V-$maximum matching. Directed Euler circuits need balanced degrees and
+connectivity among vertices incident to edges (verify all edges were used).
+
+\subsection{DP and geometry reminders}
+0/1 knapsack: iterate capacity downward. Unbounded knapsack: iterate upward.
+Bitmask DP often costs $O(n2^n)$; all-submask enumeration across every mask
+costs $O(3^n)$. Divide-and-conquer DP optimization needs monotone optimal
+split indices; verify that condition before applying it.
+
+Pick's theorem for a simple lattice polygon:
+$A=I+B/2-1$, with
+$B=\sum\gcd(|\Delta x|,|\Delta y|)$.
+Shoelace gives doubled signed area. Use exact integer orientation for integer
+coordinates; for floating calculations set tolerance relative to scale.
+Clamp an acos argument to $[-1,1]$ before calling acos.
+
+\subsection{Further reading and provenance}
+Listings are read directly from repository sources. Original buffered IO
+templates are preserved unchanged. Added snippets are written
+for this codebook, using standard algorithms; no third-party code is vendored.
+Algorithm explanations and cross-check references:
+\href{https://cp-algorithms.com/graph/dinic.html}{cp-algorithms: Dinic},
+\href{https://cp-algorithms.com/algebra/primality_tests.html}{64-bit primality},
+\href{https://cp-algorithms.com/algebra/fft.html}{NTT}, and
+\href{https://github.com/kth-competitive-programming/kactl}{KACTL} for broader
+ICPC reference coverage. Links are clickable in the PDF; this book is
+self-contained for offline use.

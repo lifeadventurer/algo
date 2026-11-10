@@ -25,6 +25,9 @@ single library.
 - `numeric/` - modular arithmetic, fast power, extended gcd
 - `string/` - string algorithms such as Z-function
 - `misc/` - fast IO, pragma helpers, RNG, and other utilities
+- `geometry/` - exact integer and floating-point geometry
+- `dp/` - LIS, Li Chao tree, and subset transforms
+- `codebook/` - printable LaTeX ICPC reference, usage notes, and validation
 - `debug.h` - local debugging helpers
 - `generate_snippets.py` - builds a `cpp.json` snippet file for VS Code
 
@@ -43,3 +46,16 @@ This writes `cpp.json` in the repo root, with one snippet per `.cpp` file.
 - Most files are intended to be pasted into contest solutions as needed.
 - The template expects `debug.h` when compiling locally with `LOCAL` defined.
 - Some snippets include placeholders meant to be filled in before use.
+
+## ICPC Codebook
+
+Build the complete two-column A4 reference with every template, usage notes,
+formulas, and contest reminders:
+
+```bash
+python3 codebook/build.py
+```
+
+The PDF and an Overleaf-ready LaTeX source ZIP are written to `output/pdf/`.
+Requires Python 3 and pdfLaTeX. See [codebook/README.md](codebook/README.md) for
+customization, dependencies, and algorithm verification.

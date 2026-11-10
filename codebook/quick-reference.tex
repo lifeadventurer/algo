@@ -1,0 +1,105 @@
+\section{Contest quick reference}
+\textbf{Before coding:} identify constraints, graph direction, indexing,
+overflow bounds, duplicates, and whether empty input is possible. Sketch
+the invariant and a small example. Estimate memory before allocating.
+
+\textbf{Before submitting:} run the sample; try $n=1$, empty ranges, all equal,
+negative values, disconnected components, repeated edges, and maximum values.
+Reset state for each case. Check output precision and trailing case labels.
+
+\textbf{Local compile:}
+\begin{lstlisting}[language=bash]
+g++ -std=c++17 -O2 -Wall -Wextra main.cpp -o main
+g++ -std=c++17 -g -O1 -fsanitize=address,undefined \
+  -fno-omit-frame-pointer main.cpp -o main
+\end{lstlisting}
+\textbf{Stress testing:} write a slow oracle for small inputs; generate random
+cases with a fixed seed; compare results and save the first failing input.
+
+\subsection{Vim setup and commands}
+If you use Vim, type these settings into \path{~/.vimrc} and open
+\texttt{main.cpp}. They use two-space indentation, keep namespace contents
+unindented like the templates, and use stock Vim features;
+no plugins are needed. In an already open Vim, load them with
+\texttt{:source \textasciitilde/.vimrc}. The source ZIP includes
+\path{codebook/contest.vimrc} for practice.
+\lstinputlisting[language={}]{codebook/contest.vimrc}
+\begin{tabular}{@{}ll@{}}
+\texttt{Esc} & Return to normal mode \\
+\texttt{i / o} & Insert / new line below \\
+\texttt{:w / :wq} & Save / save and quit \\
+\texttt{u / Ctrl-r} & Undo / redo \\
+\texttt{yy / p / dd} & Copy / paste / delete line \\
+\texttt{/text, n / N} & Search, next / previous match \\
+\texttt{* / \%} & Search current word / matching brace \\
+\texttt{gg=G} & Reindent the whole file \\
+\texttt{:noh} & Clear search highlighting \\
+\texttt{Ctrl-n} (insert mode) & Complete a word from buffers
+\end{tabular}
+
+\textbf{Compile and run inside Vim:} save first with \texttt{:w}, then use
+the commands below (for \texttt{main.cpp} in the current directory).
+\begin{lstlisting}[language={}]
+:!g++ -std=c++17 -O2 -Wall -Wextra main.cpp -o main
+:!./main < input.txt
+\end{lstlisting}
+If terminal pasting adds unwanted indentation, use \texttt{:set paste}
+before pasting and \texttt{:set nopaste} afterward.
+
+\subsection{Choose an algorithm}
+\begin{tabular}{@{}ll@{}}
+Unweighted shortest path & BFS \\
+Weights 0 or 1 & 0-1 BFS \\
+Nonnegative weights & Dijkstra \\
+Negative weights & Bellman-Ford \\
+All pairs, small graph & Floyd-Warshall \\
+Static range min/max/gcd & Sparse table \\
+Point add / prefix sum & Fenwick \\
+Range update / query & Lazy segment tree \\
+Tree paths / subtrees & HLD + segment tree \\
+Boolean binary clauses & 2-SAT \\
+Bipartite pairs & Hopcroft-Karp \\
+Capacity / disjoint paths & Flow \\
+Many pattern counts & Aho-Corasick \\
+Palindrome substrings & Manacher \\
+Polynomial multiplication & NTT \\
+Linear DP transitions & Li Chao
+\end{tabular}
+
+\subsection{C++ edge cases}
+\texttt{long long} holds about $9.22\cdot10^{18}$. Widen before multiplying:
+\texttt{1LL * a * b} or \texttt{(\_\_int128) a * b}. Signed overflow is undefined.
+Use \texttt{numeric\_limits<T>::lowest()} for a maximum-query identity.
+Use integer literals for large sentinels. Never add an infinity sentinel.
+
+\texttt{\_\_builtin\_clz(0)} and \texttt{\_\_builtin\_ctz(0)} are undefined.
+Use \texttt{1LL << k} with a valid shift count; do not shift signed 1 into its
+sign bit. \texttt{vector.size()} is unsigned. Negative modulo is negative:
+normalize with \texttt{x \%= m; if (x < 0) \{ x += m; \}}.
+
+\texttt{lower\_bound}: first element $\ge x$.
+\texttt{upper\_bound}: first element $>x$.
+Sort before using them. Comparators must be strict; do not use $\le$.
+Erase/insert may invalidate iterators. Recursive DFS on a long chain may
+exhaust the stack; use an explicit stack where needed.
+
+\subsection{Compression and binary search}
+\begin{lstlisting}
+auto xs = a;
+sort(xs.begin(), xs.end());
+xs.erase(unique(xs.begin(), xs.end()), xs.end());
+int id = (int) (lower_bound(xs.begin(), xs.end(), x) - xs.begin());
+// First true, if pred is false...false,true...true.
+// Answer n means no true element; search domain [0,n).
+long long lo = 0, hi = n;
+while (lo < hi) {
+  long long mid = lo + (hi - lo) / 2;
+  if (pred(mid)) {
+    hi = mid;
+  } else {
+    lo = mid + 1;
+  }
+}
+\end{lstlisting}
+Compression preserves order, not distances. For geometric lengths use
+the original coordinate differences.

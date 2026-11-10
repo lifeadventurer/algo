@@ -1,0 +1,125 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[left=10mm,right=10mm,top=14mm,bottom=10mm,headheight=19pt,headsep=4mm,footskip=6mm]{geometry}
+\usepackage{multicol,listings,xcolor,fancyhdr,titlesec,amsmath,amssymb}
+\usepackage[hidelinks,bookmarksnumbered]{hyperref}
+\usepackage{refcount}
+\usepackage{microtype}
+\usepackage{textcomp}
+\definecolor{ink}{gray}{0.12}
+\definecolor{muted}{gray}{0.35}
+\definecolor{rulegray}{gray}{0.70}
+\definecolor{codeblue}{HTML}{1F4F99}
+\definecolor{codered}{HTML}{A33B36}
+\definecolor{codegreen}{HTML}{2B6C3F}
+\pagestyle{fancy}
+\fancyhf{}
+% Names are generated once; page ranges come from the previous LaTeX pass.
+\newcommand{\SnippetRecords}{}
+\makeatletter
+\newcommand{\RegisterSnippet}[2]{%
+  \g@addto@macro\SnippetRecords{\SnippetOnPage{#1}{#2}}%
+}
+\makeatother
+\input{codebook/navigation.tex}
+\newcommand{\SnippetOnPage}[2]{%
+  \ifnum\getpagerefnumber{snippet-start-#1}>0\relax%
+    \ifnum\getpagerefnumber{snippet-start-#1}>\value{page}\relax%
+    \else
+      \ifnum\getpagerefnumber{snippet-end-#1}<\value{page}\relax%
+      \else
+        \SnippetSeparator\hyperref[snippet-start-#1]{#2}%
+        \def\SnippetSeparator{,\allowbreak\ }%
+        \def\SnippetFound{1}%
+      \fi
+    \fi
+  \fi
+}
+\newcommand{\PageSnippets}{%
+  \begingroup
+    \let\SnippetSeparator\empty
+    \let\SnippetFound\empty
+    \SnippetRecords
+    \ifx\SnippetFound\empty\nouppercase{\leftmark}\fi
+  \endgroup
+}
+\fancyhead[L]{\small\sffamily\bfseries lifeadventurer / ICPC}
+\fancyhead[R]{\parbox[b]{0.72\textwidth}{\raggedleft\sffamily\fontsize{7.5}{8.5}\selectfont\PageSnippets}}
+\fancyfoot[C]{\small\sffamily\thepage}
+\renewcommand{\headrulewidth}{0.3pt}
+\setlength{\columnsep}{7mm}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt}
+\setlength{\emergencystretch}{1em}
+\raggedbottom
+\titleformat{\section}{\large\sffamily\bfseries}{\thesection}{0.5em}{}
+\titleformat{\subsection}{\normalsize\sffamily\bfseries}{\thesubsection}{0.5em}{}
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\titlespacing*{\subsection}{0pt}{7pt}{2pt}
+\setcounter{tocdepth}{2}
+\lstdefinestyle{cpp}{
+  language=C++,basicstyle=\ttfamily\fontsize{8.4}{9.4}\selectfont\color{ink},
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{codered}\itshape,
+  stringstyle=\color{codegreen},showstringspaces=false,
+  morekeywords={__int128,__int128_t,__uint128_t},
+  breaklines=true,breakatwhitespace=false,
+  columns=fullflexible,keepspaces=true,tabsize=2,
+  aboveskip=3pt,belowskip=3pt,
+  prebreak=\mbox{\tiny\ensuremath{\hookleftarrow}},
+  postbreak=\mbox{\hspace{1em}},
+  upquote=true
+}
+\lstset{style=cpp}
+\newsavebox{\EntryHeader}
+\newcommand{\entry}[8]{%
+  \begin{lrbox}{\EntryHeader}\begin{minipage}{\linewidth}%
+  \subsection{#1}%
+  \label{snippet-start-#8}%
+  {\footnotesize\sffamily\color{muted}\path{#2}\hfill #6 lines\par}%
+  {\footnotesize\textbf{Time:} #3\hfill\textbf{SHA:} \texttt{#7}\par}%
+  {\footnotesize\textbf{Description:} #4\par}%
+  {\footnotesize\raggedright\textbf{Usage:} {\ttfamily #5}\par}%
+  \end{minipage}\end{lrbox}%
+  \par\noindent\usebox{\EntryHeader}\par\nopagebreak[4]%
+  \lstinputlisting[belowskip=0pt]{#2}%
+  \par\nobreak\label{snippet-end-#8}\vspace{3pt}%
+}
+\begin{document}
+\fontsize{9}{10.5}\selectfont
+\begin{center}
+  {\LARGE\sffamily\bfseries ICPC Codebook}\par
+  {\normalsize\sffamily lifeadventurer\quad /\quad C++17\quad /\quad PacNW preparation}
+\end{center}
+\textbf{How to use.} Copy only the pieces you need into the contest starter.
+All snippets assume \texttt{\#include <bits/stdc++.h>}, \texttt{\#include <cassert>}, and
+\texttt{using namespace std;} unless they already include them.
+GNU extensions are used for PBDS and 128-bit integers. Added snippets use
+0-based indices and half-open ranges unless stated otherwise; original
+templates retain their own conventions. Read the note above each listing.
+Dependencies are named explicitly. This book includes every C++ source in
+the template directories and the debug header, directly from the repository.
+\par
+\textbf{Printing.} A4, two columns, numbered pages. Print at actual size.
+\textcolor{codeblue}{Keywords}, \textcolor{codered}{comments}, and
+\textcolor{codegreen}{strings/characters} use subtle syntax colors.
+Full coverage, with no page cap.
+Page headers list the source snippets on that page and link to their entries.
+Each entry includes a usage example, source line count, and a 12-hex-character SHA-256
+fingerprint of the exact source file.
+\begin{multicols}{2}
+\tableofcontents
+\end{multicols}
+\clearpage
+\begin{multicols*}{2}
+\raggedcolumns
+\input{codebook/quick-reference.tex}
+\end{multicols*}
+\clearpage
+\begin{multicols}{2}
+\raggedcolumns
+\input{codebook/contents.tex}
+\input{codebook/formulas.tex}
+\end{multicols}
+\end{document}
