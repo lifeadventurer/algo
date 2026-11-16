@@ -103,3 +103,8 @@ while (lo < hi) {
 \end{lstlisting}
 Compression preserves order, not distances. For geometric lengths use
 the original coordinate differences.
+
+\textbf{Finding the $k$th value by counting.} Count how many candidates are
+at most $x$. The answer is the first $x$ whose count reaches $k$. This helps
+when candidates are implicit, such as pair distances. Count duplicates
+separately and choose an upper bound that contains at least $k$ candidates.

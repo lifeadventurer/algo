@@ -32,6 +32,7 @@ using namespace std;
 #include "graph/two_sat.cpp"
 #include "graph/zero_one_bfs.cpp"
 #include "misc/int128_io.cpp"
+#include "numeric/bitset_sieve.cpp"
 #include "numeric/combinatorics.cpp"
 #include "numeric/crt.cpp"
 #include "numeric/extgcd.cpp"
@@ -117,6 +118,52 @@ void data_tests() {
   f.modify(2, 3, 5);
   f.modify(5, 6, 8);
   assert(f.query(1, 1, 5, 6) == 13 && f.query(2, 3, 2, 3) == 5);
+}
+
+void order_statistics_tests() {
+  for (int rep = 0; rep < 120; rep++) {
+    int n = rnd(1, 70);
+    FenwickTree<int> bit(n + 1);
+    vector<int> counts(n), values(n), roots(n + 1);
+    PersistentSegtree pst(n);
+    for (int i = 0; i < n; i++) {
+      values[i] = rnd(0, n - 1);
+      roots[i + 1] = pst.add(roots[i], values[i], 1);
+    }
+    for (int q = 0; q < 100; q++) {
+      int p = rnd(0, n - 1), count = rnd(0, 5);
+      bit.modify(p + 1, count - counts[p]);
+      counts[p] = count;
+      vector<int> expanded;
+      for (int i = 0; i < n; i++) {
+        expanded.insert(expanded.end(), counts[i], i + 1);
+      }
+      int k = rnd(0, (int) expanded.size() + 1);
+      int expected = 1 <= k && k <= (int) expanded.size() ? expanded[k - 1] : n + 1;
+      assert(bit.kth(k) == expected);
+
+      int l = rnd(0, n), r = rnd(l, n);
+      vector<int> sub(values.begin() + l, values.begin() + r);
+      sort(sub.begin(), sub.end());
+      k = rnd(0, r - l + 1);
+      expected = 1 <= k && k <= r - l ? sub[k - 1] : -1;
+      assert(pst.kth(roots[l], roots[r], k) == expected);
+    }
+  }
+
+  FenwickTree<long long> bit(4);
+  bit.modify(3, LLONG_MAX);
+  assert(bit.kth(1) == 3 && bit.kth(LLONG_MAX) == 3);
+  assert(bit.kth(-1) == 4 && FenwickTree<int>(1).kth(1) == 1);
+
+  PersistentSegtree pst(INT_MAX);
+  int before = pst.add(0, 0, LLONG_MIN);
+  int after = pst.add(pst.add(0, 0, LLONG_MAX - 1), INT_MAX - 1, 1);
+  __int128 left = (__int128) LLONG_MAX - 1 - LLONG_MIN;
+  assert(pst.query(after, INT_MAX - 1, INT_MAX) == 1);
+  assert(pst.kth(before, after, left) == 0);
+  assert(pst.kth(before, after, left + 1) == INT_MAX - 1);
+  assert(pst.kth(before, after, left + 2) == -1);
 }
 
 void graph_tests() {
@@ -553,8 +600,18 @@ void string_tests() {
 
 void numeric_tests() {
   Sieve s(100000);
+  bitset<100001> nonprime;
+  nonprime.set();
+  assert(bitset_sieve(nonprime) == s.primes);
+  bitset<1> only_zero;
+  assert(bitset_sieve(only_zero).empty() && only_zero[0]);
+  bitset<3> through_two;
+  assert((bitset_sieve(through_two) == vector<int>{2}));
+  assert(through_two[0] && through_two[1] && !through_two[2]);
   for (int n = 0; n <= 100000; ++n) {
-    assert(is_prime(n) == (n >= 2 && s.spf[n] == n));
+    bool prime = is_prime(n);
+    assert(prime == (n >= 2 && s.spf[n] == n));
+    assert(prime == !nonprime[n]);
   }
   for (int n = 1; n <= 1000; ++n) {
     int phi = 0;
@@ -869,5 +926,6 @@ int main(int argc, char** argv) {
   numeric_tests();
   geometry_dp_tests();
   boundary_tests();
+  order_statistics_tests();
   cout << "Seed " << seed << ": all randomized comparisons and boundary cases passed.\n";
 }

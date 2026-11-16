@@ -27,4 +27,24 @@ class FenwickTree {
     }
     return val;
   }
+
+  // Nonnegative counts. Return the first index with prefix sum >= k.
+  // k is 1-based. Return n for an invalid rank.
+  int kth(T k) const {
+    if (k <= T{} || n <= 1) {
+      return n;
+    }
+    int x = 0, step = 1;
+    while (step <= (n - 1) / 2) {
+      step *= 2;
+    }
+    for (; step > 0; step /= 2) {
+      int y = x + step;
+      if (y < n && fenw[y] < k) {
+        x = y;
+        k -= fenw[y];
+      }
+    }
+    return x + 1;
+  }
 };

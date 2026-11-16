@@ -18,7 +18,7 @@ struct PersistentSegtree {
     t.push_back(t[old]);
     t[v].sum += x;
     if (r - l > 1) {
-      int m = (l + r) / 2;
+      int m = l + (r - l) / 2;
       if (p < m) {
         int c = add(t[v].l, p, x, l, m);
         t[v].l = c;
@@ -42,7 +42,7 @@ struct PersistentSegtree {
     if (a <= l && r <= b) {
       return t[v].sum;
     }
-    int m = (l + r) / 2;
+    int m = l + (r - l) / 2;
     return query(t[v].l, a, b, l, m) + query(t[v].r, a, b, m, r);
   }
 
@@ -50,5 +50,30 @@ struct PersistentSegtree {
     __int128 ans = query(root, l, r, 0, n);
     assert(LLONG_MIN <= ans && ans <= LLONG_MAX);
     return (long long) ans;
+  }
+
+  // Counts in after - before must be nonnegative at each coordinate.
+  // k is 1-based. Return the 0-based coordinate, or -1 for an invalid rank.
+  int kth(int before, int after, __int128 k) const {
+    if (k <= 0 || k > (__int128) t[after].sum - t[before].sum) {
+      return -1;
+    }
+    int l = 0, r = n;
+    while (r - l > 1) {
+      int m = l + (r - l) / 2;
+      int a = t[before].l, b = t[after].l;
+      __int128 count = (__int128) t[b].sum - t[a].sum;
+      if (k <= count) {
+        before = a;
+        after = b;
+        r = m;
+      } else {
+        k -= count;
+        before = t[before].r;
+        after = t[after].r;
+        l = m;
+      }
+    }
+    return l;
   }
 };
